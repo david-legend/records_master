@@ -50,9 +50,15 @@ class _CustomTextFieldState extends State<CustomTextField> {
           keyboardType: widget.inputType,
           obscureText: widget.obscureText,
           decoration: InputDecoration(
-              hintText: widget.hint,
-              labelText: widget.label,
-              errorText: snapshot.error
+            hintText: widget.hint,
+            labelText: widget.label,
+            errorText: snapshot.error,
+            hintStyle: TextStyle(
+              color: Colors.grey
+            ),
+            labelStyle: TextStyle(
+              color: Colors.grey
+            )
           ),
           style: TextStyle(
             color: widget.textColor,
