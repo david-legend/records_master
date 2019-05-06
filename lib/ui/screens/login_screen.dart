@@ -56,9 +56,8 @@ class _LoginScreenState extends State<LoginScreen> {
       stream: bloc.email,
       onChanged: bloc.emailChanged,
       inputType: TextInputType.emailAddress,
-      hint: "you@example.com",
+      hint: "youremail@example.com",
       label: "EMAIL",
-//      fontSize: 22.0,
       textColor: theme_color,
     );
   }
@@ -68,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
       stream: bloc.password,
       onChanged: bloc.passwordChanged,
       obscureText: true,
-      hint: "your password",
+      hint: "password",
       label: "PASSWORD",
 //      fontSize: 22.0,
       textColor: theme_color,
@@ -82,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
       elevation: 4.0,
       buttonColor: theme_color,
       splashColor: Colors.blue[200],
-      onPressed: bloc.submit,
+      onPressed: navigateToHomeScreen,
       textColor: Colors.white,
       title: "S I G N  I N",
     );
@@ -144,11 +143,14 @@ class _LoginScreenState extends State<LoginScreen> {
             child: ListView(
               children: <Widget>[
                 MainScreen(context, bloc),
-//                loginCard(emailField(bloc), passwordField(bloc), submitButton(bloc))
               ],
             )
         ),
       ),
     );
+  }
+
+  navigateToHomeScreen() {
+    Navigator.of(context).pushNamed("/home");
   }
 }
