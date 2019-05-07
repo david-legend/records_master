@@ -20,6 +20,7 @@ dependencies:
   flutter:
     sdk: flutter
   rxdart: ^0.21.0
+  material_design_icons_flutter: ^3.2.3595
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -38,7 +39,19 @@ flutter:
   assets:
       - assets/images/logo_round.png
 
-
+  fonts:
+      - family: Raleway-Regular
+        fonts:
+          - asset: assets/fonts/Raleway-Regular.ttf
+      - family: Raleway-Medium
+        fonts:
+          - asset: assets/fonts/Raleway-Medium.ttf
+      - family: Raleway-Thin
+        fonts:
+          - asset: assets/fonts/Raleway-Thin.ttf
+      - family: Roboto-Regular
+        fonts:
+          - asset: assets/fonts/Roboto-Regular.ttf
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

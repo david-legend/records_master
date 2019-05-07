@@ -4,6 +4,7 @@ class CustomTextField extends StatefulWidget {
   final String hint;
   final String label;
   final String fontFamily;
+  final TextStyle styles;
   final double fontSize;
   final Stream stream;
   final Color textColor;
@@ -17,6 +18,7 @@ class CustomTextField extends StatefulWidget {
       this.hint,
       this.label,
       this.fontFamily,
+      this.styles,
       this.fontSize,
       this.stream,
       this.textColor,
@@ -41,7 +43,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
   @override
   Widget build(BuildContext context) {
-
+  final ThemeData theme = Theme.of(context);
     return StreamBuilder(
       stream: widget.stream,
       builder: (context, snapshot) {
@@ -60,12 +62,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
               color: Colors.grey
             )
           ),
-          style: TextStyle(
-            color: widget.textColor,
-            fontSize: widget.fontSize,
-            fontWeight: FontWeight.w600,
-            fontFamily: widget.fontFamily
-          ),
+          style: widget.styles,
         );
       },
     );

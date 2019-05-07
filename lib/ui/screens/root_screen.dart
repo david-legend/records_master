@@ -10,7 +10,7 @@ class _RootScreenState extends State<RootScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BackdropDemo(),
+      body: BackDrop(),
     );
   }
 }

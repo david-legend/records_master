@@ -123,7 +123,7 @@ class BackdropPanel extends StatelessWidget {
   }
 }
 
-// Cross fades between 'Select a Category' and 'Asset Viewer'.
+// Cross fades between 'Options' and 'Record Master'.
 class BackdropTitle extends AnimatedWidget {
   const BackdropTitle({
     Key key,
@@ -160,14 +160,14 @@ class BackdropTitle extends AnimatedWidget {
 }
 
 // This widget is essentially the backdrop itself.
-class BackdropDemo extends StatefulWidget {
+class BackDrop extends StatefulWidget {
   static const String routeName = '/material/backdrop';
 
   @override
-  _BackdropDemoState createState() => _BackdropDemoState();
+  _BackDropState createState() => _BackDropState();
 }
 
-class _BackdropDemoState extends State<BackdropDemo> with SingleTickerProviderStateMixin {
+class _BackDropState extends State<BackDrop> with SingleTickerProviderStateMixin {
   final GlobalKey _backdropKey = GlobalKey(debugLabel: 'Backdrop');
   AnimationController _controller;
   Category _category = allCategories[0];
@@ -265,7 +265,10 @@ class _BackdropDemoState extends State<BackdropDemo> with SingleTickerProviderSt
             ? Colors.white.withOpacity(0.25)
             : Colors.transparent,
         child: ListTile(
-          title: Text(category.title),
+          title: Text(
+            category.title,
+            style: theme.textTheme.display3,
+          ),
           selected: selected,
           onTap: () {
             _changeCategory(category);
@@ -299,10 +302,7 @@ class _BackdropDemoState extends State<BackdropDemo> with SingleTickerProviderSt
               onVerticalDragEnd: _handleDragEnd,
               title: Text(
                 _category.title,
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  color: Color(0xFF003D75)
-                ),
+                style: theme.textTheme.subhead,
               ),
               child: CategoryView(category: _category),
             ),

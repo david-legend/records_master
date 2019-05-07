@@ -10,16 +10,17 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final Color theme_color = Colors.blue[700];
+//  final Color theme_color = Colors.blue[700];
 
-  Widget MainScreen(BuildContext context, ValidationBloc bloc) {
+
+  Widget MainScreen(BuildContext context, ValidationBloc bloc, ThemeData theme) {
     return Stack(
       children: <Widget>[
         Column(
           children: <Widget>[
             DecoratedBox(
                 decoration: BoxDecoration(
-                    color: theme_color
+                    color: theme.primaryColor
                 ),
                 child: Container(
                   width: MediaQuery
@@ -43,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               Center(
-                child: loginCard(emailField(bloc), passwordField(bloc), submitButton(bloc)),
+                child: loginCard(emailField(bloc, theme), passwordField(bloc, theme), submitButton(bloc, theme)),
               )
             ]
         )
@@ -51,35 +52,34 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget emailField(ValidationBloc bloc) {
+  Widget emailField(ValidationBloc bloc, ThemeData theme) {
     return CustomTextField(
       stream: bloc.email,
       onChanged: bloc.emailChanged,
       inputType: TextInputType.emailAddress,
       hint: "youremail@example.com",
       label: "EMAIL",
-      textColor: theme_color,
+      styles: theme.textTheme.display1,
     );
   }
 
-  Widget passwordField(ValidationBloc bloc) {
+  Widget passwordField(ValidationBloc bloc, ThemeData theme) {
     return CustomTextField(
       stream: bloc.password,
       onChanged: bloc.passwordChanged,
       obscureText: true,
       hint: "password",
       label: "PASSWORD",
-//      fontSize: 22.0,
-      textColor: theme_color,
+      styles: theme.textTheme.display1,
     );
   }
 
-  Widget submitButton(ValidationBloc bloc) {
+  Widget submitButton(ValidationBloc bloc, ThemeData theme) {
     return CustomSubmitButton(
       stream: bloc.isEmailPasswordValid,
       borderRadius: 30.0,
       elevation: 4.0,
-      buttonColor: theme_color,
+      buttonColor: theme.primaryColor,
       splashColor: Colors.blue[200],
       onPressed: navigateToHomeScreen,
       textColor: Colors.white,
@@ -106,7 +106,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.green[500],
-                        fontFamily: 'Roboto',
+                        fontFamily: 'Raleway-Regular',
                         fontSize: 22.0,
                         fontWeight: FontWeight.w700
                       ),
@@ -136,13 +136,14 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final bloc = Provider.of(context);
+    final ThemeData theme = Theme.of(context);
 
     return SafeArea(
       child: Scaffold(
         body: Container(
             child: ListView(
               children: <Widget>[
-                MainScreen(context, bloc),
+                MainScreen(context, bloc, theme),
               ],
             )
         ),

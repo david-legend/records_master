@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:record_master/blocs/provider.dart';
 import 'package:record_master/ui/screens/root_screen.dart';
 import 'package:record_master/ui/screens/login_screen.dart';
+import 'package:record_master/ui/theme.dart';
 
 void main() => runApp(MyApp());
 
@@ -17,10 +18,7 @@ class MyApp extends StatelessWidget {
           '/login': (BuildContext context) => LoginScreen(),
           '/home': (BuildContext context) => RootScreen(),
         },
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          primaryColor: Colors.blue[700],
-        ),
+        theme: kLightRecordMasterTheme,
         home: LoginScreen(),
       ),
     );

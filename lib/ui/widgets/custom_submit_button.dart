@@ -48,7 +48,8 @@ class CustomSubmitButton extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: textColor,
-                  fontWeight: FontWeight.bold
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Raleway-Medium'
                 )
             ),
           ),

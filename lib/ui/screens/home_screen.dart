@@ -1,23 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+
+enum actions { check_in, check_out, scan, media }
 
 class HomeScreen extends StatelessWidget {
-  
-  List<Action> allActions = [
+  final List<Action> allActions = [
     Action(
       title: 'Check In',
-      icon: Icons.add
+      icon: MdiIcons.login,
+      key: actions.check_in
+
     ),
     Action(
-        title: 'Check Out',
-        icon: Icons.phone_iphone
+      title: 'Check Out',
+      icon: MdiIcons.logout,
+      key: actions.check_out
     ),
     Action(
-        title: 'Scan',
-        icon: Icons.scanner
+      title: 'Scan',
+      icon: MdiIcons.qrcodeScan,
+      key: actions.scan
     ),
     Action(
-        title: 'Media',
-        icon: Icons.map
+      title: 'Media',
+      icon: MdiIcons.map,
+      key: actions.media
     ),
   ];
 
@@ -34,7 +41,9 @@ class HomeScreen extends StatelessWidget {
           padding: EdgeInsets.zero,
           splashColor: theme.primaryColor.withOpacity(0.12),
           highlightColor: Colors.transparent,
-          onPressed:(){},
+          onPressed: (){
+            someFunction(allActions[index].key);
+          },
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -44,7 +53,7 @@ class HomeScreen extends StatelessWidget {
                 child: Icon(
                   allActions[index].icon,
                   size: 80.0,
-                  color: Color(0xFF003D75),
+                  color: theme.primaryColorDark,
                 ),
               ),
               const SizedBox(height: 10.0),
@@ -54,10 +63,7 @@ class HomeScreen extends StatelessWidget {
                 child: Text(
                   allActions[index].title,
                   textAlign: TextAlign.center,
-                  style: theme.textTheme.subhead.copyWith(
-                    fontFamily: 'PT_Sans',
-                    color: Color(0xFF003D75),
-                  ),
+                  style: theme.textTheme.display1,
                 ),
               ),
             ],
@@ -66,11 +72,32 @@ class HomeScreen extends StatelessWidget {
       }),
     );
   }
+
+  someFunction(dynamic key) {
+    switch(key) {
+      case actions.check_in:
+        print('ACTION $key');
+        break;
+      case actions.check_out:
+        print('ACTION $key');
+        break;
+      case actions.scan:
+        print('ACTION $key');
+        break;
+      case actions.media:
+        print('ACTION $key');
+        break;
+      default:
+        print("THIS ISN'T SUPPOSED TO HAPPEN");
+      break;
+    }
+  }
 }
 
 class Action {
   final String title;
   final IconData icon;
+  final key;
 
-  Action({this.title, this.icon});
+  Action({this.title, this.icon, this.key});
 }
