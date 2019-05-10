@@ -3,6 +3,13 @@ import 'dart:async';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:record_master/ui/screens/full_screen_dialog_demo.dart';
+
+enum DismissDialogAction {
+  cancel,
+  discard,
+  save,
+}
 
 class QrCodeScannerScreen extends StatefulWidget {
   @override
@@ -53,6 +60,10 @@ class _ScanState extends State<QrCodeScannerScreen> {
     try {
       String barcode = await BarcodeScanner.scan();
       setState(() => this.barcode = barcode);
+      Navigator.push(context, MaterialPageRoute<DismissDialogAction>(
+        builder: (BuildContext context) => FullScreenDialog(),
+        fullscreenDialog: true,
+      ));
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         setState(() {

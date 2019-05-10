@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:record_master/blocs/provider.dart';
 import 'package:record_master/ui/widgets/custom_submit_button.dart';
 import 'package:record_master/ui/widgets/custom_text_field.dart';
 import 'package:record_master/blocs/validationBloc.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -10,7 +12,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-//  final Color theme_color = Colors.blue[700];
+  // manage state of modal progress HUD widget in login tab
+  bool _isInAsyncCall_login = false;
 
 
   Widget MainScreen(BuildContext context, ValidationBloc bloc, ThemeData theme) {
@@ -81,7 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
       elevation: 4.0,
       buttonColor: theme.primaryColor,
       splashColor: Colors.blue[200],
-      onPressed: navigateToHomeScreen,
+      onPressed: logUserIn,
       textColor: Colors.white,
       title: "S I G N  I N",
     );
@@ -140,12 +143,16 @@ class _LoginScreenState extends State<LoginScreen> {
 
     return SafeArea(
       child: Scaffold(
-        body: Container(
-            child: ListView(
-              children: <Widget>[
-                MainScreen(context, bloc, theme),
-              ],
-            )
+        body: ModalProgressHUD(
+          inAsyncCall: _isInAsyncCall_login,
+          progressIndicator: CircularProgressIndicator(),
+          child: Container(
+              child: ListView(
+                children: <Widget>[
+                  MainScreen(context, bloc, theme),
+                ],
+              )
+          ),
         ),
       ),
     );
@@ -153,5 +160,21 @@ class _LoginScreenState extends State<LoginScreen> {
 
   navigateToHomeScreen() {
     Navigator.of(context).pushNamed("/home");
+  }
+
+  void logUserIn() {
+    SystemChannels.textInput.invokeMethod('TextInput.hide');
+    setState(() {
+      _isInAsyncCall_login = true;
+    });
+
+    //Simulate a service call
+    print('submitting to backend...');
+    new Future.delayed(new Duration(seconds: 4), () {
+      setState(() {
+        _isInAsyncCall_login = false;
+      });
+      navigateToHomeScreen();
+    });
   }
 }
