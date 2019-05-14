@@ -36,37 +36,20 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   bool _isInAsyncCall_scan_finish = false;
   final List<Action> allActions = [
-    Action(
-      title: 'Check In',
-      icon: MdiIcons.login,
-      key: actions.check_in
-
-    ),
-    Action(
-      title: 'Check Out',
-      icon: MdiIcons.logout,
-      key: actions.check_out
-    ),
-    Action(
-      title: 'Scan',
-      icon: MdiIcons.qrcodeScan,
-      key: actions.scan
-    ),
-    Action(
-      title: 'Media',
-      icon: MdiIcons.map,
-      key: actions.media
-    ),
+    Action(title: 'Check In', icon: MdiIcons.login, key: actions.check_in),
+    Action(title: 'Check Out', icon: MdiIcons.logout, key: actions.check_out),
+    Action(title: 'Scan', icon: MdiIcons.qrcodeScan, key: actions.scan),
+    Action(title: 'Media', icon: MdiIcons.map, key: actions.media),
   ];
 
-  void showDemoDialog<T>({ BuildContext context, Widget child }) {
+  void showDemoDialog<T>({BuildContext context, Widget child}) {
     showDialog<T>(
       context: context,
       builder: (BuildContext context) => child,
-    )
-        .then<void>((T value) { // The value passed to Navigator.pop() or null.
+    ).then<void>((T value) {
+      // The value passed to Navigator.pop() or null.
       if (value != null) {
-          //retry scan
+        //retry scan
       }
     });
   }
@@ -84,7 +67,9 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: <Widget>[
           FlatButton(
             child: const Text('CANCEL'),
-            onPressed: () { Navigator.pop(context, DialogDemoAction.cancel); },
+            onPressed: () {
+              Navigator.pop(context, DialogDemoAction.cancel);
+            },
           ),
           FlatButton(
             child: const Text('RETRY'),
@@ -99,29 +84,37 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  showfullScreenDialog(String title, {String barcode}) async{
-    final  result = await
-    Navigator.push(context, MaterialPageRoute<DismissDialogAction>(
-      builder: (BuildContext context) => FullScreenDialog(dialogTitle: title,),
-      fullscreenDialog: true,
-    ));
+  showfullScreenDialog(String title, {String barcode}) async {
+    final result = await Navigator.push(
+        context,
+        MaterialPageRoute<DismissDialogAction>(
+          builder: (BuildContext context) => FullScreenDialog(
+                dialogTitle: title,
+              ),
+          fullscreenDialog: true,
+        ));
 
     print('Saved Successfully');
     Toast.show("$title successful", context,
-        duration: Toast.LENGTH_LONG, gravity:  Toast.BOTTOM);
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
   }
 
   showScanFullScreenDialog(String title, {String barcode}) {
-    Navigator.push(context, MaterialPageRoute<DismissDialogAction>(
-      builder: (BuildContext context) => ScannerFullScreenDialog(dialogTitle: title,),
-      fullscreenDialog: true,
-    ));
+    Navigator.push(
+        context,
+        MaterialPageRoute<DismissDialogAction>(
+          builder: (BuildContext context) => ScannerFullScreenDialog(
+                dialogTitle: title,
+              ),
+          fullscreenDialog: true,
+        ));
   }
 
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final TextStyle dialogTextStyle = theme.textTheme.subhead.copyWith(color: theme.textTheme.caption.color);
+    final TextStyle dialogTextStyle =
+        theme.textTheme.subhead.copyWith(color: theme.textTheme.caption.color);
 
     return ModalProgressHUD(
       inAsyncCall: _isInAsyncCall_scan_finish,
@@ -136,7 +129,7 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: EdgeInsets.zero,
             splashColor: theme.primaryColor.withOpacity(0.12),
             highlightColor: Colors.transparent,
-            onPressed: (){
+            onPressed: () {
               scan(allActions[index].key);
             },
             child: Column(
@@ -169,10 +162,9 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-
   //Determines which action to perform based on actionType
   determineWhichActionToPerform(dynamic actionType) {
-    switch(actionType) {
+    switch (actionType) {
       case actions.check_in:
         fakeNetworkCall(0);
 //        showfullScreenDialog(actions_string[0]);
@@ -191,7 +183,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-
   //triggers or performs the actual scan
   Future scan(dynamic actionType) async {
     try {
@@ -199,25 +190,23 @@ class _HomeScreenState extends State<HomeScreen> {
       print('ACTION BEING PERFORMED: $actionType');
 
       determineWhichActionToPerform(actionType);
-
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         //'The user did not grant the camera permission!';
       } else {
         //this.barcode = 'Unknown error: $e');
       }
-    } on FormatException{
-        dialog(actionType);
-        //setState(() => this.barcode = 'null (User returned using the "back"-button before scanning anything. Result)');
+    } on FormatException {
+      dialog(actionType);
+      //setState(() => this.barcode = 'null (User returned using the "back"-button before scanning anything. Result)');
     } catch (e) {
-        //setState(() => this.barcode = 'Unknown error: $e');
+      //setState(() => this.barcode = 'Unknown error: $e');
     }
   }
 
   void fakeNetworkCall(int index) {
-
     setState(() {
-      _isInAsyncCall_scan_finish= true;
+      _isInAsyncCall_scan_finish = true;
     });
 
     //Simulate a service call
@@ -226,12 +215,11 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         _isInAsyncCall_scan_finish = false;
       });
-      if(index == 2){
+      if (index == 2) {
         showScanFullScreenDialog('Results');
       } else {
         showfullScreenDialog(actions_string[index]);
       }
-
     });
   }
 
@@ -239,9 +227,7 @@ class _HomeScreenState extends State<HomeScreen> {
   navigateToDestination(BuildContext context, String route) {
     Navigator.of(context).pushNamed(route);
   }
-
 }
-
 
 //TODO: 1. enable scan  --- done
 //TODO: 2. dialog onback press  ---done

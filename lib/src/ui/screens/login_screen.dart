@@ -1,56 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:record_master/blocs/provider.dart';
-import 'package:record_master/ui/widgets/custom_submit_button.dart';
-import 'package:record_master/ui/widgets/custom_text_field.dart';
-import 'package:record_master/blocs/validationBloc.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:record_master/src/blocs/provider.dart';
+import 'package:record_master/src/blocs/validationBloc.dart';
+import 'package:record_master/src/providers/login_api_provider.dart';
+import 'package:record_master/src/ui/widgets/custom_submit_button.dart';
+import 'package:record_master/src/ui/widgets/custom_text_field.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
+  final SharedPreferences prefs;
+
+  LoginScreen({this.prefs});
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _loginApiProvider = loginApiProvider();
   // manage state of modal progress HUD widget in login tab
   bool _isInAsyncCall_login = false;
 
-
-  Widget MainScreen(BuildContext context, ValidationBloc bloc, ThemeData theme) {
+  Widget MainScreen(
+      BuildContext context, ValidationBloc bloc, ThemeData theme) {
     return Stack(
       children: <Widget>[
         Column(
           children: <Widget>[
             DecoratedBox(
-                decoration: BoxDecoration(
-                    color: theme.primaryColor
-                ),
+                decoration: BoxDecoration(color: theme.primaryColor),
                 child: Container(
-                  width: MediaQuery
-                      .of(context)
-                      .size
-                      .width,
+                  width: MediaQuery.of(context).size.width,
                   height: 220.0,
-                )
-            ),
+                )),
           ],
         ),
-        Column(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(top: 25.0, bottom: 15.0),
-                child: Image.asset(
-                  'assets/images/logo_round.png',
-                  color: Colors.white,
-                  width: 90.0,
-                  height: 90.0,
-                ),
-              ),
-              Center(
-                child: loginCard(emailField(bloc, theme), passwordField(bloc, theme), submitButton(bloc, theme)),
-              )
-            ]
-        )
+        Column(children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(top: 25.0, bottom: 15.0),
+            child: Image.asset(
+              'assets/images/logo_round.png',
+              color: Colors.white,
+              width: 90.0,
+              height: 90.0,
+            ),
+          ),
+          Center(
+            child: loginCard(emailField(bloc, theme),
+                passwordField(bloc, theme), submitButton(bloc, theme)),
+          )
+        ])
       ],
     );
   }
@@ -84,13 +84,20 @@ class _LoginScreenState extends State<LoginScreen> {
       elevation: 4.0,
       buttonColor: theme.primaryColor,
       splashColor: Colors.blue[200],
-      onPressed: logUserIn,
+      onPressed: () {
+        if (bloc.submit().length > 0) {
+          List data = bloc.submit();
+          _turnOnProgressIndicator();
+          _logUserIn(data[0], data[1]);
+        }
+      },
       textColor: Colors.white,
       title: "S I G N  I N",
     );
   }
 
-  Widget loginCard(Widget emailField, Widget passwordField, Widget submitButton) {
+  Widget loginCard(
+      Widget emailField, Widget passwordField, Widget submitButton) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24.0),
@@ -108,11 +115,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       'SIGN IN',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: Colors.green[500],
-                        fontFamily: 'Raleway-Regular',
-                        fontSize: 22.0,
-                        fontWeight: FontWeight.w700
-                      ),
+                          color: Colors.green[500],
+                          fontFamily: 'Raleway-Regular',
+                          fontSize: 22.0,
+                          fontWeight: FontWeight.w700),
                     ),
                   ),
                   Padding(
@@ -148,33 +154,54 @@ class _LoginScreenState extends State<LoginScreen> {
           progressIndicator: CircularProgressIndicator(),
           child: Container(
               child: ListView(
-                children: <Widget>[
-                  MainScreen(context, bloc, theme),
-                ],
-              )
-          ),
+            children: <Widget>[
+              MainScreen(context, bloc, theme),
+            ],
+          )),
         ),
       ),
     );
+  }
+
+  Future _logUserIn(email, password) async {
+    try {
+      SystemChannels.textInput.invokeMethod('TextInput.hide');
+      final tokenData = await _loginApiProvider.getAccessToken(email, password);
+      final String accessToken = tokenData.accessToken;
+
+      if (accessToken == null) {
+        print("ACCESS TOKENS : ${tokenData.accessToken}");
+        _turnOffProgressIndicator();
+      } else {
+        _saveUserToken(tokenData);
+        _turnOffProgressIndicator();
+        navigateToHomeScreen();
+      }
+    } catch (e) {
+      _turnOffProgressIndicator();
+    }
+  }
+
+  _saveUserToken(data) {
+    widget.prefs.setString('token_type', data.tokenType);
+    widget.prefs.setInt('expires_in', data.expiresIn);
+    widget.prefs.setString('access_token', data.accessToken);
+    widget.prefs.setString('refresh_token', data.refreshToken);
   }
 
   navigateToHomeScreen() {
     Navigator.of(context).pushNamed("/home");
   }
 
-  void logUserIn() {
-    SystemChannels.textInput.invokeMethod('TextInput.hide');
+  _turnOnProgressIndicator() {
     setState(() {
       _isInAsyncCall_login = true;
     });
+  }
 
-    //Simulate a service call
-    print('submitting to backend...');
-    new Future.delayed(new Duration(seconds: 4), () {
-      setState(() {
-        _isInAsyncCall_login = false;
-      });
-      navigateToHomeScreen();
+  _turnOffProgressIndicator() {
+    setState(() {
+      _isInAsyncCall_login = false;
     });
   }
 }

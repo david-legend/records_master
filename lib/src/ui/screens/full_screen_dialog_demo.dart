@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:record_master/ui/widgets/datepicker.dart';
+import 'package:record_master/src/ui/widgets/datepicker.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 enum DismissDialogAction {
@@ -13,11 +13,11 @@ enum DismissDialogAction {
 }
 
 class DateTimeItem extends StatelessWidget {
-  DateTimeItem({ Key key, DateTime dateTime, @required this.onChanged })
-    : assert(onChanged != null),
-      date = DateTime(dateTime.year, dateTime.month, dateTime.day),
-      time = TimeOfDay(hour: dateTime.hour, minute: dateTime.minute),
-      super(key: key);
+  DateTimeItem({Key key, DateTime dateTime, @required this.onChanged})
+      : assert(onChanged != null),
+        date = DateTime(dateTime.year, dateTime.month, dateTime.day),
+        time = TimeOfDay(hour: dateTime.hour, minute: dateTime.minute),
+        super(key: key);
 
   final DateTime date;
   final TimeOfDay time;
@@ -35,8 +35,8 @@ class DateTimeItem extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               decoration: BoxDecoration(
-                border: Border(bottom: BorderSide(color: theme.dividerColor))
-              ),
+                  border:
+                      Border(bottom: BorderSide(color: theme.dividerColor))),
               child: InkWell(
                 onTap: () {
                   showDatePicker(
@@ -44,10 +44,10 @@ class DateTimeItem extends StatelessWidget {
                     initialDate: date,
                     firstDate: date.subtract(const Duration(days: 30)),
                     lastDate: date.add(const Duration(days: 30)),
-                  )
-                  .then<void>((DateTime value) {
+                  ).then<void>((DateTime value) {
                     if (value != null)
-                      onChanged(DateTime(value.year, value.month, value.day, time.hour, time.minute));
+                      onChanged(DateTime(value.year, value.month, value.day,
+                          time.hour, time.minute));
                   });
                 },
                 child: Row(
@@ -64,17 +64,16 @@ class DateTimeItem extends StatelessWidget {
             margin: const EdgeInsets.only(left: 8.0),
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(color: theme.dividerColor))
-            ),
+                border: Border(bottom: BorderSide(color: theme.dividerColor))),
             child: InkWell(
               onTap: () {
                 showTimePicker(
                   context: context,
                   initialTime: time,
-                )
-                .then<void>((TimeOfDay value) {
+                ).then<void>((TimeOfDay value) {
                   if (value != null)
-                    onChanged(DateTime(date.year, date.month, date.day, value.hour, value.minute));
+                    onChanged(DateTime(date.year, date.month, date.day,
+                        value.hour, value.minute));
                 });
               },
               child: Row(
@@ -108,40 +107,42 @@ class FullScreenDialogState extends State<FullScreenDialog> {
   bool _hasName = false;
   bool _isInAsyncCall_save = false;
 
-
   Future<bool> _onWillPop() async {
     _saveNeeded = _hasLocation || _hasName || _saveNeeded;
-    if (!_saveNeeded)
-      return true;
+    if (!_saveNeeded) return true;
 
     final ThemeData theme = Theme.of(context);
-    final TextStyle dialogTextStyle = theme.textTheme.subhead.copyWith(color: theme.textTheme.caption.color);
+    final TextStyle dialogTextStyle =
+        theme.textTheme.subhead.copyWith(color: theme.textTheme.caption.color);
 
     return await showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: Text(
-            'Discard ${widget.dialogTitle}?',
-            style: dialogTextStyle,
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: const Text('CANCEL'),
-              onPressed: () {
-                Navigator.of(context).pop(false); // Pops the confirmation dialog but not the page.
-              },
-            ),
-            FlatButton(
-              child: const Text('DISCARD'),
-              onPressed: () {
-                Navigator.of(context).pop(true); // Returning true to _onWillPop will pop again.
-              },
-            ),
-          ],
-        );
-      },
-    ) ?? false;
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              content: Text(
+                'Discard ${widget.dialogTitle}?',
+                style: dialogTextStyle,
+              ),
+              actions: <Widget>[
+                FlatButton(
+                  child: const Text('CANCEL'),
+                  onPressed: () {
+                    Navigator.of(context).pop(
+                        false); // Pops the confirmation dialog but not the page.
+                  },
+                ),
+                FlatButton(
+                  child: const Text('DISCARD'),
+                  onPressed: () {
+                    Navigator.of(context).pop(
+                        true); // Returning true to _onWillPop will pop again.
+                  },
+                ),
+              ],
+            );
+          },
+        ) ??
+        false;
   }
 
   @override
@@ -151,20 +152,19 @@ class FullScreenDialogState extends State<FullScreenDialog> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.dialogTitle),
-        actions: <Widget> [
+        actions: <Widget>[
           Builder(
-            builder: (context){
+            builder: (context) {
               return FlatButton(
-                child: Text('SAVE', style: theme.textTheme.body1.copyWith(color: Colors.white)),
+                child: Text('SAVE',
+                    style: theme.textTheme.body1.copyWith(color: Colors.white)),
                 onPressed: () {
                   saveRecord();
                   Scaffold.of(context).showSnackBar(SnackBar(
                     backgroundColor: theme.primaryColor,
                     content: Text(
                       '${s[0]}ing ${s[1]} ....',
-                      style: TextStyle(
-                          color: Colors.white
-                      ),
+                      style: TextStyle(color: Colors.white),
                     ),
                     duration: Duration(seconds: 3),
                   ));
@@ -213,15 +213,13 @@ class FullScreenDialogState extends State<FullScreenDialog> {
                   ),
                 ],
               ),
-            ]
-            .map<Widget>((Widget child) {
+            ].map<Widget>((Widget child) {
               return Container(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 height: 96.0,
                 child: child,
               );
-            })
-            .toList(),
+            }).toList(),
           ),
         ),
       ),
@@ -243,8 +241,4 @@ class FullScreenDialogState extends State<FullScreenDialog> {
       Navigator.pop(context, DismissDialogAction.save);
     });
   }
-
-
 }
-
-

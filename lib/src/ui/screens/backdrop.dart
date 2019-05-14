@@ -1,8 +1,9 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:record_master/ui/screens/home_screen.dart';
-import 'package:record_master/ui/screens/settings.dart';
+import 'package:record_master/src/ui/screens/home_screen.dart';
+import 'package:record_master/src/ui/screens/settings_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 const double _kFrontHeadingHeight = 32.0; // front layer beveled rectangle
 const double _kFrontClosedHeight = 92.0; // front layer height when closed
@@ -24,14 +25,14 @@ final Animatable<BorderRadius> _kFrontHeadingBevelRadius = BorderRadiusTween(
 // (CategoryView) on top of the backdrop.
 
 class Category {
-  Category({ this.title, this.view});
+  Category({this.title, this.view});
   final String title;
   final Widget view;
   @override
   String toString() => '$runtimeType("$title")';
 }
 
- List<Category> allCategories = <Category>[
+List<Category> allCategories = <Category>[
   Category(
     title: 'Home',
     view: HomeScreen(),
@@ -47,7 +48,7 @@ class Category {
 ];
 
 class CategoryView extends StatelessWidget {
-  const CategoryView({ Key key, this.category }) : super(key: key);
+  const CategoryView({Key key, this.category}) : super(key: key);
 
   final Category category;
 
@@ -55,13 +56,12 @@ class CategoryView extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     return Container(
-      key: PageStorageKey<Category>(category),
-      padding: const EdgeInsets.symmetric(
-        vertical: 0.0,
-        horizontal: 0.0,
-      ),
-      child: category.view
-    );
+        key: PageStorageKey<Category>(category),
+        padding: const EdgeInsets.symmetric(
+          vertical: 0.0,
+          horizontal: 0.0,
+        ),
+        child: category.view);
   }
 }
 
@@ -161,13 +161,16 @@ class BackdropTitle extends AnimatedWidget {
 
 // This widget is essentially the backdrop itself.
 class BackDrop extends StatefulWidget {
-  static const String routeName = '/material/backdrop';
+  final SharedPreferences prefs;
+
+  BackDrop({this.prefs});
 
   @override
   _BackDropState createState() => _BackDropState();
 }
 
-class _BackDropState extends State<BackDrop> with SingleTickerProviderStateMixin {
+class _BackDropState extends State<BackDrop>
+    with SingleTickerProviderStateMixin {
   final GlobalKey _backdropKey = GlobalKey(debugLabel: 'Backdrop');
   AnimationController _controller;
   Category _category = allCategories[0];
@@ -197,7 +200,8 @@ class _BackDropState extends State<BackDrop> with SingleTickerProviderStateMixin
 
   bool get _backdropPanelVisible {
     final AnimationStatus status = _controller.status;
-    return status == AnimationStatus.completed || status == AnimationStatus.forward;
+    return status == AnimationStatus.completed ||
+        status == AnimationStatus.forward;
   }
 
   void _toggleBackdropPanelVisibility() {
@@ -213,17 +217,19 @@ class _BackDropState extends State<BackDrop> with SingleTickerProviderStateMixin
   // the user must either tap its heading or the backdrop's menu icon.
 
   void _handleDragUpdate(DragUpdateDetails details) {
-    if (_controller.isAnimating || _controller.status == AnimationStatus.completed)
-      return;
+    if (_controller.isAnimating ||
+        _controller.status == AnimationStatus.completed) return;
 
-    _controller.value -= details.primaryDelta / (_backdropHeight ?? details.primaryDelta);
+    _controller.value -=
+        details.primaryDelta / (_backdropHeight ?? details.primaryDelta);
   }
 
   void _handleDragEnd(DragEndDetails details) {
-    if (_controller.isAnimating || _controller.status == AnimationStatus.completed)
-      return;
+    if (_controller.isAnimating ||
+        _controller.status == AnimationStatus.completed) return;
 
-    final double flingVelocity = details.velocity.pixelsPerSecond.dy / _backdropHeight;
+    final double flingVelocity =
+        details.velocity.pixelsPerSecond.dy / _backdropHeight;
     if (flingVelocity < 0.0)
       _controller.fling(velocity: math.max(2.0, -flingVelocity));
     else if (flingVelocity > 0.0)
@@ -255,15 +261,14 @@ class _BackDropState extends State<BackDrop> with SingleTickerProviderStateMixin
     );
 
     final ThemeData theme = Theme.of(context);
-    final List<Widget> backdropItems = allCategories.map<Widget>((Category category) {
+    final List<Widget> backdropItems =
+        allCategories.map<Widget>((Category category) {
       final bool selected = category == _category;
       return Material(
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(4.0)),
         ),
-        color: selected
-            ? Colors.white.withOpacity(0.25)
-            : Colors.transparent,
+        color: selected ? Colors.white.withOpacity(0.25) : Colors.transparent,
         child: ListTile(
           title: Text(
             category.title,
@@ -344,5 +349,12 @@ class _BackDropState extends State<BackDrop> with SingleTickerProviderStateMixin
         builder: _buildStack,
       ),
     );
+  }
+
+  logPrefs() {
+    print('TOKEN_TYPE: ${widget.prefs.getString('token_type')}');
+    print('EXPIRES_IN: ${widget.prefs.getInt('expires_in')}');
+    print('ACCESS_TOKEN ${widget.prefs.getString('access_token')}');
+    print('REFRESH_TOKEN ${widget.prefs.getString('refresh_token')}');
   }
 }
