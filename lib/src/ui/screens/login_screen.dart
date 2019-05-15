@@ -173,7 +173,7 @@ class _LoginScreenState extends State<LoginScreen> {
         print("ACCESS TOKENS : ${tokenData.accessToken}");
         _turnOffProgressIndicator();
       } else {
-        _saveUserToken(tokenData);
+        _saveUserToken(tokenData, email, password);
         _turnOffProgressIndicator();
         navigateToHomeScreen();
       }
@@ -182,11 +182,13 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  _saveUserToken(data) {
+  _saveUserToken(data, String email, String password) {
     widget.prefs.setString('token_type', data.tokenType);
     widget.prefs.setInt('expires_in', data.expiresIn);
     widget.prefs.setString('access_token', data.accessToken);
     widget.prefs.setString('refresh_token', data.refreshToken);
+    widget.prefs.setString('email', email);
+    widget.prefs.setString('password', password);
   }
 
   navigateToHomeScreen() {

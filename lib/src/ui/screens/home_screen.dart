@@ -228,13 +228,3 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.of(context).pushNamed(route);
   }
 }
-
-//TODO: 1. enable scan  --- done
-//TODO: 2. dialog onback press  ---done
-//TODO: 6. repeat the above for check in and check out.. ---done
-//TODO: 4. full screen dialog when qr code is how we want it.
-
-//TODO: 3. dialog when there is no internet
-//TODO: 5. dialog when qr code is not what we issued.
-
-//TODO: 7. Brain storm account and settings screen..

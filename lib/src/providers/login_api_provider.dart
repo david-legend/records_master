@@ -4,9 +4,9 @@ import 'package:http/http.dart' as http;
 import 'package:record_master/src/models/token.dart';
 import 'package:record_master/src/models/user.dart';
 
-final root_url = "http://recordmaster.shrinqghana.com";
+final root_url = "https://recordmaster.shrinqghana.com";
 //final String root_url = "http://4e887650.ngrok.io";
-final String client_secret = "3rz2F6sZSaL72jjbjFL1R4zWWzEmunjcTfW3LUUC";
+final String client_secret = "whg5Uetc6T6IzzqkbFan1fMMGO7gK5Yawurbrgd9";
 final String grant_type = "password";
 final String client_id = "2";
 
@@ -37,12 +37,9 @@ class loginApiProvider {
       },
       headers: {"Authorization": "Bearer $token"},
     );
+
+    final parsedJson = json.decode(response.body);
     print('${response.body}');
-//    final parsedJson = json.decode(response.body);
-//    print(parsedJson);
-//    final user = UserModel.fromJson(parsedJson);
-//    print(user.data.email);
-//    print(user.success);
-//    return UserModel.fromJson(parsedJson);
+    return UserModel.fromJson(parsedJson);
   }
 }

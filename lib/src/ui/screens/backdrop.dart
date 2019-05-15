@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:record_master/src/ui/screens/account_screen.dart';
 import 'package:record_master/src/ui/screens/home_screen.dart';
 import 'package:record_master/src/ui/screens/settings_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -25,9 +26,11 @@ final Animatable<BorderRadius> _kFrontHeadingBevelRadius = BorderRadiusTween(
 // (CategoryView) on top of the backdrop.
 
 class Category {
-  Category({this.title, this.view});
+  Category({this.title, this.view, this.prefs});
   final String title;
   final Widget view;
+  final SharedPreferences prefs;
+
   @override
   String toString() => '$runtimeType("$title")';
 }
@@ -37,18 +40,19 @@ List<Category> allCategories = <Category>[
     title: 'Home',
     view: HomeScreen(),
   ),
-  Category(
-    title: 'Settings',
-    view: SettingsScreen(),
-  ),
+//  Category(
+//    title: 'Settings',
+//    view: SettingsScreen(),
+//  ),
   Category(
     title: 'Account',
-    view: SettingsScreen(),
+    view: AccountScreen(),
   ),
 ];
 
 class CategoryView extends StatelessWidget {
-  const CategoryView({Key key, this.category}) : super(key: key);
+  final SharedPreferences prefs;
+  const CategoryView({Key key, this.category, this.prefs}) : super(key: key);
 
   final Category category;
 
@@ -309,7 +313,7 @@ class _BackDropState extends State<BackDrop>
                 _category.title,
                 style: theme.textTheme.subhead,
               ),
-              child: CategoryView(category: _category),
+              child: CategoryView(category: _category, prefs: widget.prefs),
             ),
           ),
         ],
