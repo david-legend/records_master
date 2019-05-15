@@ -83,7 +83,7 @@ class _AccountScreenState extends State<AccountScreen> {
             fontWeight: FontWeight.w600,
           ),
         ),
-        subtitle: Text(subtitle,
+        subtitle: Text(subtitle ?? 'fetching..',
             style: TextStyle(
               color: Colors.grey[700],
               fontSize: 14.0,

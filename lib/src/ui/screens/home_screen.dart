@@ -42,6 +42,11 @@ class _HomeScreenState extends State<HomeScreen> {
     Action(title: 'Media', icon: MdiIcons.map, key: actions.media),
   ];
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   void showDemoDialog<T>({BuildContext context, Widget child}) {
     showDialog<T>(
       context: context,

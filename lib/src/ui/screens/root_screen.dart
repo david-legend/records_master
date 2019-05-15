@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:record_master/src/providers/login_api_provider.dart';
 import 'package:record_master/src/ui/screens/backdrop.dart';
@@ -31,14 +32,42 @@ class _RootScreenState extends State<RootScreen> {
     }
   }
 
+  Future<bool> _onWillPop() {
+    return showDialog(
+          context: context,
+          builder: (context) => new AlertDialog(
+                title: new Text('Are you sure?'),
+                content: new Text('Do you want to exit Record Master'),
+                actions: <Widget>[
+                  new FlatButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: new Text('No'),
+                  ),
+                  new FlatButton(
+                    onPressed: () {
+                      //Navigator.of(context).pop(true);
+                      SystemChannels.platform
+                          .invokeMethod('SystemNavigator.pop');
+                    },
+                    child: new Text('Yes'),
+                  ),
+                ],
+              ),
+        ) ??
+        false;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ModalProgressHUD(
-      inAsyncCall: _isInAsyncCallUserDetails,
-      progressIndicator: CircularProgressIndicator(),
-      child: Scaffold(
-        body: BackDrop(
-          prefs: widget.prefs,
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: ModalProgressHUD(
+        inAsyncCall: _isInAsyncCallUserDetails,
+        progressIndicator: CircularProgressIndicator(),
+        child: Scaffold(
+          body: BackDrop(
+            prefs: widget.prefs,
+          ),
         ),
       ),
     );

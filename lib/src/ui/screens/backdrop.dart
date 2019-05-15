@@ -26,10 +26,9 @@ final Animatable<BorderRadius> _kFrontHeadingBevelRadius = BorderRadiusTween(
 // (CategoryView) on top of the backdrop.
 
 class Category {
-  Category({this.title, this.view, this.prefs});
+  Category({this.title, this.view});
   final String title;
   final Widget view;
-  final SharedPreferences prefs;
 
   @override
   String toString() => '$runtimeType("$title")';
@@ -51,8 +50,7 @@ List<Category> allCategories = <Category>[
 ];
 
 class CategoryView extends StatelessWidget {
-  final SharedPreferences prefs;
-  const CategoryView({Key key, this.category, this.prefs}) : super(key: key);
+  const CategoryView({Key key, this.category}) : super(key: key);
 
   final Category category;
 
@@ -313,7 +311,7 @@ class _BackDropState extends State<BackDrop>
                 _category.title,
                 style: theme.textTheme.subhead,
               ),
-              child: CategoryView(category: _category, prefs: widget.prefs),
+              child: CategoryView(category: _category),
             ),
           ),
         ],
