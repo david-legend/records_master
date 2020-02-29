@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+git import 'package:flutter/material.dart';
 import 'package:record_master/src/blocs/validationBloc.dart';
 
 class Provider extends InheritedWidget {
